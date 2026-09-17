@@ -1,2 +1,992 @@
-# khrba
-نظام كهربي
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>كهربتي | حاسبة فاتورة الكهرباء السعودية</title>
+  <meta name="description" content="حاسبة كهربتي لحساب استهلاك وفاتورة الكهرباء في السعودية بسهولة وسرعة وفق شرائح الاستهلاك.">
+  <meta name="keywords" content="حاسبة الكهرباء, فاتورة الكهرباء السعودية, حساب فاتورة الكهرباء, استهلاك الكهرباء, كهربتي">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Tahoma, Arial, sans-serif;
+      background: #f5f8fc;
+      color: #172033;
+      line-height: 1.7;
+    }
+
+    /* ================= HEADER ================= */
+
+    header {
+      background: rgba(255,255,255,0.97);
+      border-bottom: 1px solid #e8edf5;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+
+    .header-container {
+      max-width: 1150px;
+      margin: auto;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #172033;
+      font-weight: bold;
+      font-size: 22px;
+    }
+
+    .logo-icon {
+      width: 43px;
+      height: 43px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1565c0, #00a8e8);
+      color: white;
+      font-size: 23px;
+      box-shadow: 0 7px 20px rgba(21,101,192,0.22);
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #566174;
+      margin-right: 24px;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    nav a:hover {
+      color: #1565c0;
+    }
+
+    /* ================= HERO ================= */
+
+    .hero {
+      background:
+        radial-gradient(circle at 15% 20%, rgba(0,168,232,0.18), transparent 28%),
+        radial-gradient(circle at 85% 10%, rgba(21,101,192,0.16), transparent 30%),
+        linear-gradient(135deg, #f7fbff, #eef6ff);
+      padding: 75px 20px 65px;
+    }
+
+    .hero-container {
+      max-width: 1050px;
+      margin: auto;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #e5f4ff;
+      color: #1565c0;
+      padding: 7px 15px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-size: clamp(32px, 6vw, 58px);
+      line-height: 1.15;
+      margin-bottom: 20px;
+      color: #101828;
+      letter-spacing: -1px;
+    }
+
+    .hero h1 span {
+      color: #1565c0;
+    }
+
+    .hero p {
+      max-width: 700px;
+      margin: auto;
+      color: #657084;
+      font-size: 18px;
+    }
+
+    /* ================= CALCULATOR ================= */
+
+    .calculator-section {
+      padding: 50px 20px;
+    }
+
+    .calculator {
+      max-width: 850px;
+      margin: auto;
+      background: white;
+      border-radius: 24px;
+      padding: 35px;
+      box-shadow: 0 20px 60px rgba(31,55,90,0.10);
+      border: 1px solid #e7edf5;
+    }
+
+    .calculator-title {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .calculator-title h2 {
+      font-size: 27px;
+      margin-bottom: 7px;
+    }
+
+    .calculator-title p {
+      color: #778197;
+      font-size: 14px;
+    }
+
+    .input-group {
+      margin-bottom: 22px;
+    }
+
+    .input-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 9px;
+      font-size: 15px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper input {
+      width: 100%;
+      padding: 17px 18px;
+      border: 2px solid #e3e9f2;
+      border-radius: 13px;
+      outline: none;
+      font-size: 17px;
+      transition: 0.2s;
+      background: #fbfcfe;
+    }
+
+    .input-wrapper input:focus {
+      border-color: #1596d1;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(21,150,209,0.08);
+    }
+
+    .unit {
+      position: absolute;
+      left: 17px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #7c8799;
+      font-size: 13px;
+    }
+
+    .results {
+      margin-top: 30px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .result-card {
+      padding: 22px 15px;
+      background: #f7faff;
+      border: 1px solid #e5edf7;
+      border-radius: 16px;
+      text-align: center;
+    }
+
+    .result-card .label {
+      color: #718096;
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .result-card .value {
+      font-size: 25px;
+      font-weight: bold;
+      color: #1565c0;
+    }
+
+    .result-card.highlight {
+      background: linear-gradient(135deg, #1565c0, #00a8e8);
+      border: none;
+    }
+
+    .result-card.highlight .label,
+    .result-card.highlight .value {
+      color: white;
+    }
+
+    .note {
+      margin-top: 22px;
+      padding: 14px 16px;
+      background: #fff9e8;
+      border-right: 4px solid #f5b700;
+      border-radius: 10px;
+      font-size: 12px;
+      color: #75611f;
+    }
+
+    /* ================= FEATURES ================= */
+
+    .features {
+      padding: 30px 20px 70px;
+    }
+
+    .section-container {
+      max-width: 1050px;
+      margin: auto;
+    }
+
+    .section-heading {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .section-heading h2 {
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
+
+    .section-heading p {
+      color: #778197;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .feature {
+      background: white;
+      padding: 28px 23px;
+      border-radius: 18px;
+      border: 1px solid #e7edf5;
+      box-shadow: 0 10px 35px rgba(31,55,90,0.05);
+      text-align: center;
+      transition: 0.25s;
+    }
+
+    .feature:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(31,55,90,0.09);
+    }
+
+    .feature-icon {
+      width: 55px;
+      height: 55px;
+      margin: 0 auto 16px;
+      border-radius: 16px;
+      background: #eaf6ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 25px;
+    }
+
+    .feature h3 {
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .feature p {
+      color: #748096;
+      font-size: 13px;
+    }
+
+    /* ================= INFO ================= */
+
+    .info {
+      background: white;
+      padding: 65px 20px;
+      border-top: 1px solid #e7edf5;
+      border-bottom: 1px solid #e7edf5;
+    }
+
+    .info-box {
+      max-width: 850px;
+      margin: auto;
+    }
+
+    .info h2 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .info p {
+      color: #657084;
+      font-size: 15px;
+      margin-bottom: 13px;
+    }
+
+    /* ================= COMMENTS ================= */
+
+    .comments {
+      padding: 65px 20px;
+    }
+
+    .comment-box {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      border: 1px solid #e6edf5;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 35px rgba(31,55,90,0.05);
+    }
+
+    .comment-box h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .comment-box input,
+    .comment-box textarea {
+      width: 100%;
+      border: 1px solid #dfe6ef;
+      border-radius: 11px;
+      padding: 13px;
+      margin-bottom: 12px;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .comment-box textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .comment-box input:focus,
+    .comment-box textarea:focus {
+      border-color: #1596d1;
+    }
+
+    .comment-box button {
+      width: 100%;
+      border: none;
+      background: #1565c0;
+      color: white;
+      padding: 14px;
+      border-radius: 11px;
+      cursor: pointer;
+      font-size: 15px;
+      font-family: inherit;
+    }
+
+    .comment-box button:hover {
+      background: #0d4f98;
+    }
+
+    .comment-note {
+      text-align: center;
+      color: #8993a3;
+      font-size: 11px;
+      margin-top: 10px;
+    }
+
+    /* ================= FOOTER ================= */
+
+    footer {
+      background: #101828;
+      color: white;
+      padding: 45px 20px 25px;
+    }
+
+    .footer-container {
+      max-width: 1050px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr;
+      gap: 35px;
+    }
+
+    .footer-brand h3 {
+      font-size: 23px;
+      margin-bottom: 10px;
+    }
+
+    .footer-brand p {
+      color: #aab3c2;
+      font-size: 13px;
+      max-width: 350px;
+    }
+
+    .footer-column h4 {
+      margin-bottom: 13px;
+      font-size: 15px;
+    }
+
+    .footer-column p,
+    .footer-column a {
+      color: #aab3c2;
+      font-size: 13px;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 7px;
+    }
+
+    .footer-column a:hover {
+      color: white;
+    }
+
+    .contact-number {
+      direction: ltr;
+      unicode-bidi: embed;
+      display: inline-block !important;
+      color: #62c5f0 !important;
+      font-weight: bold;
+      font-size: 16px !important;
+      margin-top: 5px;
+    }
+
+    .copyright {
+      max-width: 1050px;
+      margin: 35px auto 0;
+      padding-top: 20px;
+      border-top: 1px solid #283345;
+      text-align: center;
+      color: #7f8a9d;
+      font-size: 12px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 800px) {
+
+      nav {
+        display: none;
+      }
+
+      .hero {
+        padding: 55px 18px 45px;
+      }
+
+      .hero p {
+        font-size: 15px;
+      }
+
+      .calculator {
+        padding: 24px 18px;
+        border-radius: 18px;
+      }
+
+      .results {
+        grid-template-columns: 1fr;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .footer-brand p {
+        margin: auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+
+      .header-container {
+        padding: 12px 15px;
+      }
+
+      .logo {
+        font-size: 19px;
+      }
+
+      .logo-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 20px;
+      }
+
+      .hero h1 {
+        font-size: 34px;
+      }
+
+      .calculator-title h2 {
+        font-size: 23px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ================= HEADER ================= -->
+
+  <header>
+    <div class="header-container">
+
+      <a href="#" class="logo">
+        <div class="logo-icon">⚡</div>
+        <span>كهربتي</span>
+      </a>
+
+      <nav>
+        <a href="#calculator">الحاسبة</a>
+        <a href="#features">المميزات</a>
+        <a href="#about">عن الموقع</a>
+        <a href="#contact">التواصل</a>
+      </nav>
+
+    </div>
+  </header>
+
+
+  <!-- ================= HERO ================= -->
+
+  <section class="hero">
+
+    <div class="hero-container">
+
+      <div class="badge">🇸🇦 مصممة للاستخدام في السعودية</div>
+
+      <h1>
+        احسب فاتورة الكهرباء
+        <span>بسهولة</span>
+      </h1>
+
+      <p>
+        أدخل استهلاكك بالكيلوواط ساعة واحصل على تقدير سريع
+        لاستهلاكك اليومي والفاتورة الشهرية.
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= CALCULATOR ================= -->
+
+  <section class="calculator-section" id="calculator">
+
+    <div class="calculator">
+
+      <div class="calculator-title">
+
+        <h2>حاسبة فاتورة الكهرباء</h2>
+
+        <p>
+          أدخل كمية الاستهلاك بالكيلوواط ساعة
+        </p>
+
+      </div>
+
+      <div class="input-group">
+
+        <label for="monthlyUsage">
+          الاستهلاك الشهري
+        </label>
+
+        <div class="input-wrapper">
+
+          <input
+            type="number"
+            id="monthlyUsage"
+            placeholder="مثال: 500"
+            min="0"
+            step="1"
+            oninput="calculateBill()"
+          >
+
+          <span class="unit">ك.و.س</span>
+
+        </div>
+
+      </div>
+
+
+      <div class="results">
+
+        <div class="result-card">
+
+          <div class="label">
+            الاستهلاك اليومي
+          </div>
+
+          <div class="value" id="dailyUsage">
+            0
+          </div>
+
+          <small>ك.و.س</small>
+
+        </div>
+
+
+        <div class="result-card">
+
+          <div class="label">
+            سعر الاستهلاك
+          </div>
+
+          <div class="value" id="energyCost">
+            0
+          </div>
+
+          <small>ريال</small>
+
+        </div>
+
+
+        <div class="result-card highlight">
+
+          <div class="label">
+            الفاتورة التقديرية
+          </div>
+
+          <div class="value" id="totalBill">
+            0
+          </div>
+
+          <small>ريال</small>
+
+        </div>
+
+      </div>
+
+
+      <div class="note">
+        ⚠️ هذه الحاسبة تعطي قيمة تقديرية بناءً على شرائح الاستهلاك
+        ولا تشمل بالضرورة جميع الرسوم أو الضرائب أو أي مبالغ إضافية
+        قد تظهر في الفاتورة الفعلية.
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= FEATURES ================= -->
+
+  <section class="features" id="features">
+
+    <div class="section-container">
+
+      <div class="section-heading">
+
+        <h2>لماذا كهربتي؟</h2>
+
+        <p>
+          أداة بسيطة وسريعة لمعرفة تقدير استهلاك الكهرباء
+        </p>
+
+      </div>
+
+
+      <div class="features-grid">
+
+        <div class="feature">
+
+          <div class="feature-icon">
+            ⚡
+          </div>
+
+          <h3>حساب سريع</h3>
+
+          <p>
+            أدخل استهلاكك وشاهد النتيجة مباشرة دون الحاجة
+            إلى تسجيل حساب أو تحميل تطبيق.
+          </p>
+
+        </div>
+
+
+        <div class="feature">
+
+          <div class="feature-icon">
+            📱
+          </div>
+
+          <h3>متوافق مع الجوال</h3>
+
+          <p>
+            تصميم متجاوب يعمل على الجوال والتابلت والكمبيوتر
+            بمختلف أحجام الشاشات.
+          </p>
+
+        </div>
+
+
+        <div class="feature">
+
+          <div class="feature-icon">
+            🔒
+          </div>
+
+          <h3>بسيط وخصوصي</h3>
+
+          <p>
+            لا تحتاج إلى إنشاء حساب أو إدخال بيانات شخصية
+            لاستخدام الحاسبة.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= ABOUT ================= -->
+
+  <section class="info" id="about">
+
+    <div class="info-box">
+
+      <h2>عن كهربتي</h2>
+
+      <p>
+        كهربتي هي أداة إلكترونية مبسطة تساعد المستخدم على
+        تقدير تكلفة استهلاك الكهرباء في المملكة العربية السعودية.
+      </p>
+
+      <p>
+        تم تصميم الموقع ليكون سريعًا وسهل الاستخدام، بحيث يستطيع
+        المستخدم إدخال كمية الاستهلاك الشهرية ومعرفة تقدير الفاتورة
+        والاستهلاك اليومي خلال ثوانٍ.
+      </p>
+
+      <p>
+        الهدف من الحاسبة هو تقديم تقدير مبسط يساعد المستخدم على
+        فهم استهلاكه ومتابعته بشكل أفضل.
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= COMMENTS ================= -->
+
+  <section class="comments">
+
+    <div class="comment-box">
+
+      <h2>شاركنا رأيك</h2>
+
+      <input
+        type="text"
+        id="commentName"
+        placeholder="اسمك"
+      >
+
+      <textarea
+        id="commentText"
+        placeholder="اكتب ملاحظتك أو اقتراحك هنا..."
+      ></textarea>
+
+      <button onclick="sendComment()">
+        إرسال الملاحظة
+      </button>
+
+      <div class="comment-note">
+        ملاحظة: زر الإرسال يفتح تطبيق البريد الإلكتروني لإرسال الملاحظة.
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= FOOTER ================= -->
+
+  <footer id="contact">
+
+    <div class="footer-container">
+
+      <div class="footer-brand">
+
+        <h3>⚡ كهربتي</h3>
+
+        <p>
+          حاسبة إلكترونية بسيطة وسريعة لتقدير فاتورة
+          واستهلاك الكهرباء في السعودية.
+        </p>
+
+      </div>
+
+
+      <div class="footer-column">
+
+        <h4>روابط</h4>
+
+        <a href="#calculator">حاسبة الكهرباء</a>
+        <a href="#features">المميزات</a>
+        <a href="#about">عن الموقع</a>
+
+      </div>
+
+
+      <div class="footer-column">
+
+        <h4>التواصل</h4>
+
+        <p>
+          للبيع أو الشراء أو الملاحظات:
+        </p>
+
+        <a
+          class="contact-number"
+          href="tel:0543925739"
+        >
+          0543925739
+        </a>
+
+        <a
+          href="mailto:ryanalbrns67@gmail.com"
+        >
+          ryanalbrns67@gmail.com
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <div class="copyright">
+
+      © 2026 كهربتي — جميع الحقوق محفوظة
+
+    </div>
+
+  </footer>
+
+
+  <!-- ================= JAVASCRIPT ================= -->
+
+  <script>
+
+    function calculateBill() {
+
+      const usage =
+        parseFloat(
+          document.getElementById("monthlyUsage").value
+        ) || 0;
+
+
+      /*
+        شرائح الاستهلاك:
+        حتى 600 ك.و.س = 0.18 ريال لكل ك.و.س
+        أكثر من 600 ك.و.س = 0.30 ريال لكل ك.و.س للجزء الزائد
+      */
+
+      let energyCost = 0;
+
+      if (usage <= 600) {
+
+        energyCost = usage * 0.18;
+
+      } else {
+
+        energyCost =
+          (600 * 0.18) +
+          ((usage - 600) * 0.30);
+
+      }
+
+
+      const dailyUsage =
+        usage / 30;
+
+
+      /*
+        ضريبة القيمة المضافة 15%
+      */
+
+      const vat =
+        energyCost * 0.15;
+
+
+      const totalBill =
+        energyCost + vat;
+
+
+      document.getElementById("dailyUsage").textContent =
+        dailyUsage.toFixed(1);
+
+
+      document.getElementById("energyCost").textContent =
+        energyCost.toFixed(2);
+
+
+      document.getElementById("totalBill").textContent =
+        totalBill.toFixed(2);
+
+    }
+
+
+    function sendComment() {
+
+      const name =
+        document.getElementById("commentName").value.trim();
+
+      const comment =
+        document.getElementById("commentText").value.trim();
+
+
+      if (!name || !comment) {
+
+        alert("فضلاً اكتب اسمك والملاحظة أولاً.");
+
+        return;
+
+      }
+
+
+      const subject =
+        encodeURIComponent(
+          "ملاحظة من موقع كهربتي"
+        );
+
+
+      const body =
+        encodeURIComponent(
+          "الاسم: " + name +
+          "\n\nالملاحظة:\n" + comment
+        );
+
+
+      window.location.href =
+        "mailto:ryanalbrns67@gmail.com?subject=" +
+        subject +
+        "&body=" +
+        body;
+
+    }
+
+  </script>
+
+</body>
+</html>
+```
+
