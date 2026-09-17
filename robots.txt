@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://khrbaa.com/sitemap.xml
